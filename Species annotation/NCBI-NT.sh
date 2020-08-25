@@ -7,8 +7,9 @@ perl get.node_gi.v3.accession.pl 2157 nt.2157 nodes.dmp nucl_gb.accession2taxid.
 perl get.node_gi.v3.accession.pl 10239 nt.10239 nodes.dmp nucl_gb.accession2taxid.gz
 perl get.node_gi.v3.accession.pl 12884 nt.12884 nodes.dmp nucl_gb.accession2taxid.gz
 perl get.node_gi.v3.accession.pl 1301 nt.1301 nodes.dmp nucl_gb.accession2taxid.gz
+perl get.node_gi.v3.accession.pl 4751 nt.4751 nodes.dmp nucl_gb.accession2taxid.gz
 
-cat nt.2 nt.2157 nt.10239 nt.12884 nt.1301 > NCBI-NT.fa
+cat nt.2 nt.2157 nt.10239 nt.12884 nt.1301 nt.4751 > NCBI-NT.fa
 makeblastdb -in NCBI-NT.fa -dbtype nucl
 
 perl split_fa.pl s 9 ../gene_catalog.fas split
