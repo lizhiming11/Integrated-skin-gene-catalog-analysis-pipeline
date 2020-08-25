@@ -3,8 +3,8 @@ Integrated skin gene catalog(ISGC) pipeline to characterize a set of skin microb
 
 # Requirements
 
-Python 3.6
-NCBI BLAST 2.9.0
-six 1.7.0+
-zlib
-Prodigal 2.6.3
+- Python 3.6
+- NCBI BLAST 2.9.0
+- six 1.7.0+
+- zlib
+- Prodigal 2.6.3
