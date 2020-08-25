@@ -11,27 +11,27 @@ Integrated skin gene catalog(ISGC) pipeline to characterize a set of skin microb
 - [NCBI BLAST 2.7.1](https://blast.ncbi.nlm.nih.gov/Blast.cgi)
 
 # A brief description of the contents
-Clean and rmhost data/
-quality control for samples including remove low quality reads and remove human sequence
+Clean and rmhost data/  
+quality control for samples including remove low quality reads and remove human sequence  
 
-Assembly/
-Adaptive and iterative assembly for samples with variable coverage.
+Assembly/  
+Adaptive and iterative assembly for samples with variable coverage.  
 
-Prediction/
-Ab initio gene identification was performed for all assembled contigs. 
+Prediction/  
+Ab initio gene identification was performed for all assembled contigs.   
 
-Predict gene clustering/
-Creation of non-redundant multi-kingdom skin gene catalog.
+Predict gene clustering/  
+Creation of non-redundant multi-kingdom skin gene catalog.  
 
-Species annotation/
-Multi-kingdom (bacterial, fungal, viral) taxonomic mapping to NCBI-NT
+Species annotation/  
+Multi-kingdom (bacterial, fungal, viral) taxonomic mapping to NCBI-NT.  
 
-KEGG annotation/
-We aligned putative amino acid sequences, which translated from the ISGC, against the proteins or domains in KEGG databases
+KEGG annotation/  
+We aligned putative amino acid sequences, which translated from the ISGC, against the proteins or domains in KEGG databases.  
 
-ARGs annotation/
-ARGs were identified using the Resistance Gene Identifier (RGI, v4.2.2) based on the CARD database(v3.0.7)
+ARGs annotation/  
+ARGs were identified using the Resistance Gene Identifier (RGI, v4.2.2) based on the CARD database(v3.0.7).  
 
-Quantification of gene, KO and species/
-gene, KO, and species abundance estimations.
+Quantification of gene, KO, ARGs and species/  
+gene, KO, ARGs and species abundance estimations.  
 
