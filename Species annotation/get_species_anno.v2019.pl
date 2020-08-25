@@ -1,18 +1,14 @@
 use warnings;
 use strict;
 
-############################################################
-### Author: lishenghui@genomics.org.cn                   ###
-### Version: 1.0 (Apr. 1st, 2012)                        ###
-############################################################
 
 die "perl $0 [blastout (input)] [outfile]\n" unless @ARGV == 2;
 my ($in_f, $out_f) = @ARGV;
 ### print STDERR "Program $0 Start...\n";
 
-my $acc2taxid_f = "/share/data5/lish/database/nt_2019/nucl_gb.accession2taxid.gz";
-my $node_f = "/share/data5/lish/database/nt_2019/nodes.dmp";
-my $name_f = "/share/data5/lish/database/nt_2019/names.dmp";
+my $acc2taxid_f = "nucl_gb.accession2taxid.gz";
+my $node_f = "nodes.dmp";
+my $name_f = "names.dmp";
 
 my %taxa = ();
 $taxa{"superkingdom"} = "k";
