@@ -35,6 +35,6 @@ ARGs were identified using the Resistance Gene Identifier (RGI, v4.2.2) based on
 Quantification of gene, KO, ARGs and species/  
 gene, KO, ARGs and species abundance estimations.  
 
-R_script/
+R_script/  
 Drawing and statistics scripts.
 
