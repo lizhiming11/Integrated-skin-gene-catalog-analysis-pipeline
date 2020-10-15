@@ -1,0 +1,106 @@
+library(tidyverse)
+library(viridis)
+library(dplyr)
+library(RColorBrewer)
+
+#ReadData
+mapfile='mapping_HMP2.txt'
+taxafile='phylum.profile'
+filename='Kingdom.Ns.pdf'
+#nose/cheek/forehead
+location='nose'
+#Number of Select Taxa
+n=3
+newpalette<-c('#F0E9B7','#A90026','#519041')
+
+map<-read.table(mapfile,header=T,sep='\t',
+                check.names = F,stringsAsFactors = F,row.names = 1)
+map<-map[map$Type==location,]
+
+Dat<-read.table(taxafile,header=T,sep='\t',check.names = F,
+                stringsAsFactors = F,comment.char = "",row.names = 1)
+
+Dat<-Dat[,colSums(Dat)!=0]
+Dat<-t(t(Dat)/colSums(Dat))*100
+Dat<-as.data.frame(Dat)
+
+
+#Calculate Viruses/Eukaryota/Bacteria
+Dat<-as.data.frame(t(Dat))
+Dat$Viruses<-rowSums(Dat[,grepl("k_Viruses",colnames(Dat))])
+Dat$Eukaryota<-rowSums(Dat[,grepl("k_Eukaryota",colnames(Dat))])
+Dat$Bacteria<-rowSums(Dat[,grepl("k_Bacteria",colnames(Dat))])
+Dat<-Dat[,35:37]
+
+Dat<-Dat[rownames(Dat)%in%rownames(map),]
+map<-map[rownames(map)%in%rownames(Dat),]
+Dat<-Dat[rownames(map),]
+Dat$ID<-rownames(Dat)
+Dat$r <- map$Type
+Dat$id<-c(1:nrow(Dat))
+
+
+data1 = gather(Dat,Kingdom,Value,-c('ID','id','r'))
+data1$r =factor(data1$r)
+
+# Set a number of 'empty bar' to add at the end of each group
+empty_bar=5
+nObsType=nlevels(as.factor(data1$r))
+to_add = data.frame( matrix(NA, empty_bar*(n+1)*nObsType, ncol(data1)) )
+colnames(to_add) = colnames(data1)
+to_add$r=levels(data1$r)
+data1=rbind(data1, to_add)
+data1=data1 %>% arrange(id)
+data1$id = rep(seq(1, nrow(data1)/n), each=n)
+
+# Get the name and the y position of each label
+label_data= data1 %>% group_by(id, ID) %>% summarize(tot=sum(Value))
+number_of_bar=nrow(label_data)
+angle= 90 - 360 * (label_data$id-0.5) /number_of_bar     
+# I substract 0.5 because the letter must have the angle of the center of the bars. Not extreme right(1) or extreme left (0)
+label_data$hjust<-ifelse( angle < -90, 1, 0)
+label_data$angle<-ifelse(angle < -90, angle+180, angle)
+
+# prepare a data frame for base lines
+base_data=data1 %>% 
+  group_by(r) %>% 
+  summarize(start=min(id), end=max(id) - empty_bar) %>% 
+  rowwise() %>% 
+  mutate(title=mean(c(start, end)))
+
+
+# prepare a data frame for grid (scales)
+grid_data = base_data
+grid_data$end = grid_data$end[ c( nrow(grid_data), 1:nrow(grid_data)-1)] + 1
+grid_data$start = grid_data$start - 1
+#grid_data=grid_data[-1,]
+
+
+p = ggplot(data1) +      
+  
+  # Add the stacked bar
+  geom_bar(aes(x=as.factor(id), y=Value, fill=Kingdom), stat="identity", alpha=1) +
+  #scale_fill_viridis(discrete=TRUE) +
+  scale_fill_manual(values = newpalette)+
+  
+  # Add a val=100/75/50/25 lines. I do it at the beginning to make sur barplots are OVER it.
+  #geom_segment(data=grid_data, aes(x = end, y = 0, xend = start, yend = 0), colour = "grey", alpha=1, size=0.3 , inherit.aes = FALSE ) +
+  
+  # Add text showing the value of each 100/75/50/25 lines
+  #annotate("text", x = rep(max(data1$id),5), y = c(0, 25, 50, 75, 100), label = c("0", "25", "50", "75", "100") , color="black", size=2 , angle=0, fontface="bold", hjust=1) +
+  
+  ylim(-150,max(label_data$tot, na.rm=T)) +
+  theme_minimal() +
+  theme(
+    #legend.position = "none",
+    axis.text = element_blank(),
+    axis.title = element_blank(),
+    panel.grid = element_blank(),
+    plot.margin = unit(rep(-1,4), "cm") 
+  ) +
+  coord_polar() 
+  
+  
+#pdf(filename,width = 12,height = 6)
+p
+#dev.off()
