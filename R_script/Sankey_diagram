@@ -1,0 +1,60 @@
+gene_profile = read.csv("card.profile",sep = "\t",check.names = F,
+                        stringsAsFactors = F,header = T,row.names = 1)
+gene_length = read.table("card_length",sep = "\t",check.names = F,
+                         stringsAsFactors = F,row.names = 1)
+gene_length = gene_length[row.names(gene_profile),]
+row.names(gene_profile) = gene_length[,1]
+species = read.table("card_species",sep = "\t",check.names = F,
+                     stringsAsFactors = F)
+gene_profile = gene_profile[species[,1],]
+gene_profile$type = species$V2
+species_name = unique(gene_profile$type)
+species_num = data.frame(matrix(rep(0,length(species_name)*2),ncol = 2))
+species_num[,1] = species_name
+for(i in 1:nrow(species_num)){
+  species_num[i,2] = sum(gene_profile$type==species_name[i])
+}
+row.names(species_num) = species_num[,1]
+species_profile = aggregate(.~type,gene_profile,sum)
+row.names(species_profile) = species_profile[,1]
+species_profile = species_profile[,-1]
+species_profile = species_profile[grep("s_",row.names(species_profile)),]
+species_num = species_num[grep("s_",species_num[,1]),]
+species_profile = species_profile[species_num[,1],]
+
+#species_profile = read.table("Resistance Mechanism.profile",sep ="\t",check.names = F,
+#                             stringsAsFactors = F,header = T,row.names = 1)
+
+mapping =read.table("mapping_HMP2.txt",sep = "\t",check.names = F,
+                    stringsAsFactors = F,header = T,row.names = 1)
+mapping = mapping[row.names(mapping)%in%colnames(species_profile),]
+species_profile= species_profile[,row.names(mapping)]
+species_profile = data.frame(t(species_profile),check.names = F,stringsAsFactors = F)
+species_profile = species_profile[,!colnames(species_profile)%in%"k_Bacteria;s_uncultured bacterium"]
+name = unique(mapping$Type)
+library(networkD3)
+library(dplyr)
+links = data.frame()
+for(i in 1:length(name)){
+  a = species_profile[mapping$Type==name[i],]
+  a = a[,order(apply(a, 2, mean),decreasing = T)]
+  links = rbind(links,data.frame(source = rep(name[i],10),target = c(colnames(a)[1:9],"other"),
+                                 value=c(apply(a, 2, mean)[1:9],sum(apply(a, 2, mean))-sum(apply(a, 2, mean)[1:9]))))
+}
+links[,2] = gsub(".*;s_","",links[,2])
+nodes <- data.frame(
+  name=c(as.character(links$source), 
+         as.character(links$target)) %>% unique()
+)
+
+# With networkD3, connection must be provided using id, not using real name like in the links dataframe.. So we need to reformat it.
+links$IDsource <- match(links$source, nodes$name)-1 
+links$IDtarget <- match(links$target, nodes$name)-1
+
+
+# Make the Network
+p <- sankeyNetwork(Links = links, Nodes = nodes,
+                   Source = "IDsource", Target = "IDtarget",
+                   Value = "value", NodeID = "name", 
+                   sinksRight=FALSE)
+p
