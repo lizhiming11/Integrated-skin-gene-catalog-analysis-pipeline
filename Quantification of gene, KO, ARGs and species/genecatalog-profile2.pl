@@ -1,22 +1,5 @@
 #!/share/apps/perl5/bin/perl
-#===============================================================================
-#
-#         FILE: genecatalog-profile2ko.pl
-#
-#        USAGE: ./genecatalog-profile2ko.pl
-#
-#  DESCRIPTION:
-#
-#      OPTIONS: ---
-# REQUIREMENTS: ---
-#         BUGS: ---
-#        NOTES: ---
-#       AUTHOR: ZHOU Yuanjie (ZHOU YJ), libranjie@gmail.com
-# ORGANIZATION: R & D Department
-#      VERSION: 1.0
-#      CREATED: Fri Dec  1 18:45:36 2017 CST
-#     REVISION: ---
-#===============================================================================
+
 use strict;
 use warnings;
 use utf8;
